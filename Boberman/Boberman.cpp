@@ -8,19 +8,10 @@
 
 using namespace std;
 
-// Координаты должны учитывать и нулевую строку и столбец из решеток
-int g_width = 15; 
-int g_height = 15; 
-int g_square = g_width * g_height;
-int g_step_counter = 0;
-
-class Events  // Долго объяснять
-{
-public:
-    __event void Boom(int radius);
-    __event void DestroyedBlocks(int x, int y);
-    __event void Dead();
-};
+static unsigned int g_width = 15; 
+static unsigned int g_height = 15;
+static unsigned int g_square = g_width * g_height;
+static unsigned int g_step_counter = 0;
 
 struct Coords
 {
@@ -99,7 +90,7 @@ static vector<Coords> gen_obstacles(int skoka) {
     }
 
     // Перемешиваем
-    shuffle(obstls.begin(), obstls.end(), gen);
+    ranges::shuffle(obstls, gen);
 
     return obstls;
 }
@@ -151,25 +142,25 @@ static void draw_field(Coords man, const vector<Coords>* obstacles = nullptr)
 static void move(char key, Coords* man, const vector<Coords>& obstacles)
 {
     switch (key) {
-    case 'ж':
+    case static_cast<unsigned int>('ж'):
     case 'w':
         if (collides({ .x= man->x, .y= decr(man->y)}, obstacles)) break;
     	man->y = decr(man->y);
         ++g_step_counter;
         break;
-    case 'д':
+    case static_cast<unsigned int>('д'):
     case 'a':
         if (collides({ .x= decr(man->x), .y= man->y }, obstacles)) break;
         man->x = decr(man->x);
         ++g_step_counter;
         break;
-    case 'л':
+    case static_cast<unsigned int>('л'):
     case 's':
         if (collides({.x= man->x, .y= incr(man->y, g_height) }, obstacles)) break;
         man->y = incr(man->y, g_height);
         ++g_step_counter;
         break;
-    case 'ў':
+    case static_cast<unsigned int>('ў'):
     case 'd':
         if (collides({ .x = incr(man->x, g_width), .y = man->y }, obstacles)) break;
         man->x = incr(man->x, g_width);
@@ -222,12 +213,12 @@ int main()
 
         char key = static_cast<char>(_getch());
 
-        if (key == 'w' || key == 'ж')
+        if (key == 'w' || key == static_cast<int>('ж'))
         {
             curr--;
             if (curr < 0) curr = options - 1;
         }
-        else if (key == 's' || key == 'л')
+        else if (key == 's' || key == static_cast<int>('л'))
         {
             curr++;
             if (curr > options - 1) curr = 0;
