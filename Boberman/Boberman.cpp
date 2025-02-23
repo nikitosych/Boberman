@@ -2,7 +2,6 @@
 #include <iostream>
 #include <conio.h>
 #include <format> 
-#include <list>
 #include <random>
 #include <vector>
 #include <Windows.h>
@@ -152,21 +151,25 @@ static void draw_field(Coords man, const vector<Coords>* obstacles = nullptr)
 static void move(char key, Coords* man, const vector<Coords>& obstacles)
 {
     switch (key) {
+    case 'ж':
     case 'w':
         if (collides({ .x= man->x, .y= decr(man->y)}, obstacles)) break;
     	man->y = decr(man->y);
         ++g_step_counter;
         break;
+    case 'д':
     case 'a':
         if (collides({ .x= decr(man->x), .y= man->y }, obstacles)) break;
         man->x = decr(man->x);
         ++g_step_counter;
         break;
+    case 'л':
     case 's':
         if (collides({.x= man->x, .y= incr(man->y, g_height) }, obstacles)) break;
         man->y = incr(man->y, g_height);
         ++g_step_counter;
         break;
+    case 'ў':
     case 'd':
         if (collides({ .x = incr(man->x, g_width), .y = man->y }, obstacles)) break;
         man->x = incr(man->x, g_width);
@@ -219,12 +222,12 @@ int main()
 
         char key = static_cast<char>(_getch());
 
-        if (key == 'w')
+        if (key == 'w' || key == 'ж')
         {
             curr--;
             if (curr < 0) curr = options - 1;
         }
-        else if (key == 's')
+        else if (key == 's' || key == 'л')
         {
             curr++;
             if (curr > options - 1) curr = 0;
@@ -285,7 +288,7 @@ int main()
 
             cpwo("Welcum to my gayme Boberman! *восьмибитная азартная музяка*\nPress \"L\" to stop it\n\n", 3);
 
-            if (key == 'l')
+            if (key == 'l' || key == '¤')
             {
                 cpwo("Dowidzenia <3\n");
                 break;
@@ -293,7 +296,7 @@ int main()
 
             move(key, &man, obstls);
             draw_field(man, &obstls);
-            cpwo(format("\nКлавиша: {}\n", key), 3);
+            cpwo(format("\nКлавиша: {}({})\n", key, static_cast<int>(key)), 3);
             cpwo(format("x = {}, y = {}\n", man.x, man.y), 3);
         }
     }
