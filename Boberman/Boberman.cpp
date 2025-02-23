@@ -1,8 +1,8 @@
 ﻿#include <algorithm>
 #include <iostream>
 #include <conio.h>
-#include <algorithm>
 #include <format> 
+#include <list>
 #include <random>
 #include <vector>
 #include <Windows.h>
@@ -10,9 +10,10 @@
 using namespace std;
 
 // Координаты должны учитывать и нулевую строку и столбец из решеток
-int WIDTH = 15; 
-int HEIGHT = 15; 
-int SQUARE = WIDTH * HEIGHT;
+int g_width = 15; 
+int g_height = 15; 
+int g_square = g_width * g_height;
+int g_step_counter = 0;
 
 class Events  // Долго объяснять
 {
@@ -89,12 +90,12 @@ static vector<Coords> gen_obstacles(int skoka) {
     // https://ru.cppreference.com/w/cpp/numeric/random/uniform_int_distribution
     random_device rd; // генератор типа rand()
     mt19937 gen(rd()); // указываем как именно будут подбираться рандомные значения
-    uniform_int_distribution<int> dist_x(1, WIDTH - 1);
-    uniform_int_distribution<int> dist_y(1, HEIGHT - 1);
+    uniform_int_distribution<int> dist_x(1, g_width - 1);
+    uniform_int_distribution<int> dist_y(1, g_height - 1);
 
+    vector<Coords> obstls; // TODO должен хранить tuple<Coords, bool>, где bool - разрушаемая ли стена
 
-    vector<Coords> obstls;
-    for (int i = 0; i < skoka; i++) {
+    for (int i = 0; i < skoka; ++i) {
         obstls.push_back({ .x= dist_x(gen), .y= dist_y(gen) });
     }
 
@@ -115,18 +116,18 @@ static bool collides(const Coords& man, const vector<Coords>& obstacles)
 /// Рысуе поле
 /// </summary>
 /// <param name="man">человечек, координаты человечка</param>
-/// <param name="obstacles">вектор препятствий, который передается по указателю, чтоб его менять внутри функции</param>
+/// <param name="obstacles">вектор препятствий, который передается по указателю, чтоб его менять внутри функции (блоки вед взрываем)</param>
 static void draw_field(Coords man, const vector<Coords>* obstacles = nullptr)
 {
-    for (int i = 1; i <= WIDTH + 1; i++) {
+    for (int i = 1; i <= g_width + 1; ++i) {
         cpwo(" # ", 6, 2);
     } // Первая линия решетками
 
     cpwo('\n');
 
-    for (int i = 1; i < HEIGHT; i++) {
+    for (int i = 1; i < g_height; ++i) {
         cpwo(" # ", 6, 2);
-        for (int j = 1; j < WIDTH; j++) {
+        for (int j = 1; j < g_width; j++) {
             if (man.x == j && man.y == i) {
                 cpwo(" + ");
             }
@@ -141,7 +142,7 @@ static void draw_field(Coords man, const vector<Coords>* obstacles = nullptr)
         cpwo('\n');
     }
 
-    for (int i = 1; i <= WIDTH + 1; i++) {
+    for (int i = 1; i <= g_width + 1; ++i) {
         cpwo(" # ", 6, 2);
     }
 
@@ -154,18 +155,26 @@ static void move(char key, Coords* man, const vector<Coords>& obstacles)
     case 'w':
         if (collides({ .x= man->x, .y= decr(man->y)}, obstacles)) break;
     	man->y = decr(man->y);
+        ++g_step_counter;
         break;
     case 'a':
         if (collides({ .x= decr(man->x), .y= man->y }, obstacles)) break;
         man->x = decr(man->x);
+        ++g_step_counter;
         break;
     case 's':
-        if (collides({.x= man->x, .y= incr(man->y, HEIGHT) }, obstacles)) break;
-        man->y = incr(man->y, HEIGHT);
+        if (collides({.x= man->x, .y= incr(man->y, g_height) }, obstacles)) break;
+        man->y = incr(man->y, g_height);
+        ++g_step_counter;
         break;
     case 'd':
-        if (collides({ .x = incr(man->x, WIDTH), .y = man->y }, obstacles)) break;
-        man->x = incr(man->x, WIDTH);
+        if (collides({ .x = incr(man->x, g_width), .y = man->y }, obstacles)) break;
+        man->x = incr(man->x, g_width);
+        ++g_step_counter;
+        break;
+    case '\r':
+    case '\n':
+        g_step_counter = 0;
         break;
     default: break;
     }
@@ -175,7 +184,7 @@ int main()
 {
     Coords man = { .x = 1, .y = 1 };
     (void)setlocale(LC_ALL, "");
-    auto obstls = gen_obstacles(SQUARE / 4);
+    auto obstls = gen_obstacles(g_square / 4);
 
     constexpr int options = 5;
     int curr = 0;
@@ -185,25 +194,25 @@ int main()
         system("cls");
         cpwo("Welcum to my gayme Boberman! *восьмибитная азартная музяка*\nPress any key to start :)\n\nЧе нада?\n", 3);
 
-        for (int i = 0; i < options; i++)
+        for (int i = 0; i < options; ++i)
         {
             char targeted = i == curr ? '+' : ' ';
             switch (i)
             {
             case 0:
-                cpwo(format("[ {} ]\t1. Play\n", targeted), 3);
+                cpwo(format("[ {} ]\t\t1. Play\n", targeted), 3);
                 break;
             case 1:
-                cpwo(format("[ {} ]\t2. Change obstacles quantity\n", targeted), 3);
+                cpwo(format("[ {} ]\t\t2. Change obstacles quantity\n", targeted), 3);
                 break;
             case 2:
-                cpwo(format("[ {} ]\t3. Print obstacles\n", targeted), 3);
+                cpwo(format("[ {} ]\t\t3. Print obstacles\n", targeted), 3);
                 break;
             case 3:
-                cpwo(format("[ {} ]\t4. Change field size\n", targeted), 3);
+                cpwo(format("[ {} ]\t\t4. Change field size\n", targeted), 3);
                 break;
             case 4:
-                cpwo(format("[ {} ]\t5. Exit\n", targeted), 3);
+                cpwo(format("[ {} ]\t\t5. Exit\n", targeted), 3);
                 break;
             }
         }
@@ -212,11 +221,13 @@ int main()
 
         if (key == 'w')
         {
-            curr = max(0, curr - 1);
+            curr--;
+            if (curr < 0) curr = options - 1;
         }
         else if (key == 's')
         {
-            curr = min(options - 1, curr + 1);
+            curr++;
+            if (curr > options - 1) curr = 0;
         }
         else if (key == '\r' || key == '\n') // ентер
         {
@@ -225,9 +236,9 @@ int main()
             else if (curr == 1)
             {
                 unsigned int obstls_q;
-                cpwo(format("Current quantity: {}\nEnter new quantity or pass >SQUARE/4||bullshit to return: ", obstls.size()));
+                cpwo(format("Current quantity: {}\nEnter new quantity or pass >g_square/4||bullshit to return: ", obstls.size()));
                 cin >> obstls_q;
-                if (obstls_q <= SQUARE / 4)
+                if (obstls_q <= g_square / 4)
                     obstls = gen_obstacles(obstls_q);
             }
             else if (curr == 2)
@@ -243,16 +254,17 @@ int main()
             else if (curr == 3)
             {
                 unsigned int width, height;
-                cpwo(format("Current width: {}\nCurrent height: {}\nEnter new width or pass >30||bullshit to return: ", WIDTH, HEIGHT));
+                cpwo(format("Current width: {}\nCurrent height: {}\nEnter new width or pass >30||bullshit to return: ", g_width, g_height));
                 cin >> width;
                 if (width <= 30)
-                    WIDTH = width;
+                    g_width = width;
                 else continue;
                 cpwo("Enter new height or pass >30||bullshit to return: ");
                 cin >> height;
                 if (height <= 30)
-                    HEIGHT = height;
+                    g_height = height;
                 else continue;
+                g_square = g_width * g_height;
             }
             else if (curr == 4)
             {
