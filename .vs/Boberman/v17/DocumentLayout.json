@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Nikita\\source\\repos\\Boberman\\",
+  "WorkspaceRootPath": "F:\\Developing\\c\\Boberman\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DBC06809-B551-4FCC-925F-1E6EF574E23F}|Boberman\\Boberman.vcxproj|C:\\Users\\Nikita\\source\\repos\\Boberman\\Boberman\\Boberman.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{DBC06809-B551-4FCC-925F-1E6EF574E23F}|Boberman\\Boberman.vcxproj|F:\\Developing\\c\\Boberman\\Boberman\\Boberman.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{DBC06809-B551-4FCC-925F-1E6EF574E23F}|Boberman\\Boberman.vcxproj|solutionrelative:Boberman\\Boberman.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -20,11 +20,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Boberman.cpp",
-              "DocumentMoniker": "C:\\Users\\Nikita\\source\\repos\\Boberman\\Boberman\\Boberman.cpp",
+              "DocumentMoniker": "F:\\Developing\\c\\Boberman\\Boberman\\Boberman.cpp",
               "RelativeDocumentMoniker": "Boberman\\Boberman.cpp",
-              "ToolTip": "C:\\Users\\Nikita\\source\\repos\\Boberman\\Boberman\\Boberman.cpp",
-              "RelativeToolTip": "Boberman\\Boberman.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAABAAAA",
+              "ToolTip": "F:\\Developing\\c\\Boberman\\Boberman\\Boberman.cpp*",
+              "RelativeToolTip": "Boberman\\Boberman.cpp*",
+              "ViewState": "AgIAAOwAAAAAAAAAAAAlwBABAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-02-21T18:14:48.401Z",
               "EditorCaption": ""
