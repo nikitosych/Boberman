@@ -130,6 +130,10 @@
   <ItemGroup>
     <ClCompile Include="Boberman.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="playground.h" />
+    <ClInclude Include="utils.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
