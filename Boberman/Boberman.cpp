@@ -1,184 +1,19 @@
-﻿#include <algorithm>
-#include <iostream>
-#include <conio.h>
-#include <format> 
-#include <random>
-#include <vector>
-#include <Windows.h>
+﻿#include <conio.h> 
+#include "playground.h" 
+
+// NOTES
+// 1. Хранить поле вместе с координатами игрока, препятствий, врагов и бомб как динамические данные (состояния). 
+//    Можно имплементировать как классы.
+// 2. Использовать ивентовую систему
+// 3. Позже сделать игру на winapi, возможно позже и на D3D11.h (оконное, если пойдет по маслу то в трехмерной графике)
 
 using namespace std;
 
-static unsigned int g_width = 15; 
-static unsigned int g_height = 15;
-static unsigned int g_square = g_width * g_height;
-static unsigned int g_step_counter = 0;
-
-struct Coords
-{
-    int x;
-    int y;
-};
-
-static void cpwo(const string& value, int textColor = 7, int bgColor = 0)
-{
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole,
-        (bgColor << 4) | textColor);
-
-    cout << value;
-    SetConsoleTextAttribute(hConsole,
-        (0 << 4) | 7);
-}
-
-static void cpwo(char c, int textColor = 7, int bgColor = 0)
-{
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole,
-        (bgColor << 4) | textColor);
-
-    cout << c;
-    SetConsoleTextAttribute(hConsole,
-        (0 << 4) | 7);
-    /*
-
-Color      Background    Foreground
----------------------------------------------
-Black            0           0
-Blue             1           1
-Green            2           2
-Cyan             3           3
-Red              4           4
-Magenta          5           5
-Brown            6           6
-White            7           7
-Gray             -           8
-Intense Blue     -           9
-Intense Green    -           10
-Intense Cyan     -           11
-Intense Red      -           12
-Intense Magenta  -           13
-Yellow           -           14
-Intense White    -           15
-
-
-
-  */
-}
-
-static int decr(int coord) {
-    if (max(coord, 1) == 1) return 1; // Шоб не вышшла за границу
-    return coord - 1;
-}
-
-static int incr(int coord, int border) {
-    if (min(coord, border) == border) return border; // Шоб не вышла за границу
-    return coord + 1;
-}
-
-static vector<Coords> gen_obstacles(int skoka) {
-    // я точно не понимаю, как это происходит, но четыре строки кода ниже генерируют случайные значения в нужном диапазоне
-    // https://ru.cppreference.com/w/cpp/numeric/random/uniform_int_distribution
-    random_device rd; // генератор типа rand()
-    mt19937 gen(rd()); // указываем как именно будут подбираться рандомные значения
-    uniform_int_distribution<int> dist_x(1, g_width - 1);
-    uniform_int_distribution<int> dist_y(1, g_height - 1);
-
-    vector<Coords> obstls; // TODO должен хранить tuple<Coords, bool>, где bool - разрушаемая ли стена
-
-    for (int i = 0; i < skoka; ++i) {
-        obstls.push_back({ .x= dist_x(gen), .y= dist_y(gen) });
-    }
-
-    // Перемешиваем
-    ranges::shuffle(obstls, gen);
-
-    return obstls;
-}
-
-static bool collides(const Coords& man, const vector<Coords>& obstacles)
-{
-    int x = man.x; int y = man.y;
-    return find_if(obstacles.begin(), obstacles.end(), [x, y](Coords o) { return o.x == x && o.y == y; }) != obstacles.end();
-}
-
-
-/// <summary>
-/// Рысуе поле
-/// </summary>
-/// <param name="man">человечек, координаты человечка</param>
-/// <param name="obstacles">вектор препятствий, который передается по указателю, чтоб его менять внутри функции (блоки вед взрываем)</param>
-static void draw_field(Coords man, const vector<Coords>* obstacles = nullptr)
-{
-    for (int i = 1; i <= g_width + 1; ++i) {
-        cpwo(" # ", 6, 2);
-    } // Первая линия решетками
-
-    cpwo('\n');
-
-    for (int i = 1; i < g_height; ++i) {
-        cpwo(" # ", 6, 2);
-        for (int j = 1; j < g_width; j++) {
-            if (man.x == j && man.y == i) {
-                cpwo(" + ");
-            }
-            else if (collides({ .x = j, .y = i }, *obstacles)) { // ищем текущие координаты (i, j) в векторе obstacles
-                cpwo(" $ ");
-            }
-            else {
-                cpwo("   ");
-            }
-        }
-        cpwo(" # ", 6, 2);
-        cpwo('\n');
-    }
-
-    for (int i = 1; i <= g_width + 1; ++i) {
-        cpwo(" # ", 6, 2);
-    }
-
-    cpwo('\n');
-}
-
-static void move(char key, Coords* man, const vector<Coords>& obstacles)
-{
-    switch (key) {
-    case static_cast<unsigned int>('ж'):
-    case 'w':
-        if (collides({ .x= man->x, .y= decr(man->y)}, obstacles)) break;
-    	man->y = decr(man->y);
-        ++g_step_counter;
-        break;
-    case static_cast<unsigned int>('д'):
-    case 'a':
-        if (collides({ .x= decr(man->x), .y= man->y }, obstacles)) break;
-        man->x = decr(man->x);
-        ++g_step_counter;
-        break;
-    case static_cast<unsigned int>('л'):
-    case 's':
-        if (collides({.x= man->x, .y= incr(man->y, g_height) }, obstacles)) break;
-        man->y = incr(man->y, g_height);
-        ++g_step_counter;
-        break;
-    case static_cast<unsigned int>('ў'):
-    case 'd':
-        if (collides({ .x = incr(man->x, g_width), .y = man->y }, obstacles)) break;
-        man->x = incr(man->x, g_width);
-        ++g_step_counter;
-        break;
-    case '\r':
-    case '\n':
-        g_step_counter = 0;
-        break;
-    default: break;
-    }
-}
-
 int main()
 {
-    Coords man = { .x = 1, .y = 1 };
     (void)setlocale(LC_ALL, "");
-    auto obstls = gen_obstacles(g_square / 4);
+
+    Playground field = Playground({ 1, 1 }, 15, 15, (15 * 15) / 3); // Предзагружаем поле для доступа к его свойствам в меню
 
     constexpr int options = 5;
     int curr = 0;
@@ -213,6 +48,8 @@ int main()
 
         char key = static_cast<char>(_getch());
 
+        unsigned int walls_q = field.getWallsQ();
+
         if (key == 'w' || key == static_cast<int>('ж'))
         {
             curr--;
@@ -229,36 +66,31 @@ int main()
                 break;
             else if (curr == 1)
             {
-                unsigned int obstls_q;
-                cpwo(format("Current quantity: {}\nEnter new quantity or pass >g_square/4||bullshit to return: ", obstls.size()));
-                cin >> obstls_q;
-                if (obstls_q <= g_square / 4)
-                    obstls = gen_obstacles(obstls_q);
+                cpwo(format("Current quantity: {}\nEnter new quantity or pass >g_square/4||bullshit to return: ", field.getWallsQ()));
+                cin >> walls_q;
+                if (walls_q <= field.getSquare() / 4)
+                     field.gen_walls(walls_q);
             }
             else if (curr == 2)
             {
                 cpwo("Current obstacles:\n");
-                for (Coords o : obstls)
+                for (const auto w : field.getWalls())
                 {
-                    cpwo(format("({}, {}),\n", o.x, o.y));
+                    cpwo(format("({}, {}),\n", w.coords.x, w.coords.y));
                 }
-                cpwo("Почитал? Нажми тогда любую клавищу");
+                cpwo("\nПочитал? Нажми тогда любую клавищу");
                 _getch();
             }
             else if (curr == 3)
             {
                 unsigned int width, height;
-                cpwo(format("Current width: {}\nCurrent height: {}\nEnter new width or pass >30||bullshit to return: ", g_width, g_height));
+                cpwo(format("Current width: {}\nCurrent height: {}\nEnter new width or pass >30||bullshit to return: ", field.getWidth(), field.getHeight()));
                 cin >> width;
-                if (width <= 30)
-                    g_width = width;
-                else continue;
+                if (width > 30) continue;
                 cpwo("Enter new height or pass >30||bullshit to return: ");
                 cin >> height;
-                if (height <= 30)
-                    g_height = height;
-                else continue;
-                g_square = g_width * g_height;
+                if (height > 30) continue;
+                field = Playground({ 1,1 }, width, height, walls_q);
             }
             else if (curr == 4)
             {
@@ -272,9 +104,9 @@ int main()
 
     while (true)
     {
-        if (_kbhit()) // ожидание клавиши в буфере
+        if (_kbhit()) // проверка нажатой клавиши в буфере консоли
         {
-            char key = static_cast<char>(_getch()); // ожидаем клавишу и явно преобразовываем ее шоб компилятор не гавкал
+            char key = static_cast<char>(_getch()); // получаем последнюю нажатую клавишу и явно преобразовываем ее шоб редактор не гавкал
             system("cls");
 
             cpwo("Welcum to my gayme Boberman! *восьмибитная азартная музяка*\nPress \"L\" to stop it\n\n", 3);
@@ -285,10 +117,10 @@ int main()
                 break;
             }
 
-            move(key, &man, obstls);
-            draw_field(man, &obstls);
+            field.move(key);
+            field.draw_field();
             cpwo(format("\nКлавиша: {}({})\n", key, static_cast<int>(key)), 3);
-            cpwo(format("x = {}, y = {}\n", man.x, man.y), 3);
+            cpwo(format("x = {}, y = {}\n", field.getX(), field.getY()), 3);
         }
     }
     return 0;
