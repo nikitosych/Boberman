@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <format> // ςπεασες C++20
+#include <format> // Ρ‚Ρ€ΠµΠ±ΡƒΠµΡ‚ C++20
 #include <Windows.h>
 
 using namespace std;

@@ -28,12 +28,12 @@ class Playground
 
 public:
 	/// <summary>
-	///     Инициализация поля с заданными параметрами
+	///     РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРѕР»СЏ СЃ Р·Р°РґР°РЅРЅС‹РјРё РїР°СЂР°РјРµС‚СЂР°РјРё
 	/// </summary>
-	/// <param name="startPlayer">Начальное положение игрока (рек. 1 и 1)</param>
-	/// <param name="width">Длина поля</param>
-	/// <param name="height">Ширина (высота) поля</param>
-	/// <param name="wallsCount">Количество стен в поле</param>
+	/// <param name="startPlayer">РќР°С‡Р°Р»СЊРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ РёРіСЂРѕРєР° (СЂРµРє. 1 Рё 1)</param>
+	/// <param name="width">Р”Р»РёРЅР° РїРѕР»СЏ</param>
+	/// <param name="height">РЁРёСЂРёРЅР° (РІС‹СЃРѕС‚Р°) РїРѕР»СЏ</param>
+	/// <param name="wallsCount">РљРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚РµРЅ РІ РїРѕР»Рµ</param>
 	Playground(
 		Coords startPlayer,
 		unsigned int width,
@@ -50,8 +50,8 @@ public:
 		this->gen_walls(wallsCount);
 	}
 
-	// для справки: директивы ниже не влияют на компиляцию, 
-	// а просто позволяют кайфово группировать код в visual studio
+	// РґР»СЏ СЃРїСЂР°РІРєРё: РґРёСЂРµРєС‚РёРІС‹ РЅРёР¶Рµ РЅРµ РІР»РёСЏСЋС‚ РЅР° РєРѕРјРїРёР»СЏС†РёСЋ, 
+	// Р° РїСЂРѕСЃС‚Рѕ РїРѕР·РІРѕР»СЏСЋС‚ РєР°Р№С„РѕРІРѕ РіСЂСѓРїРїРёСЂРѕРІР°С‚СЊ РєРѕРґ РІ visual studio
 #pragma region GETTERS
 	unsigned int getSteps()
 	{
@@ -67,10 +67,10 @@ public:
 	const vector<Wall> getWalls() { return this->walls; }
 
 	/// <summary>
-	/// Использует <algorithm> для поиска координат, переданных в параметры, в векторе стен
+	/// РСЃРїРѕР»СЊР·СѓРµС‚ <algorithm> РґР»СЏ РїРѕРёСЃРєР° РєРѕРѕСЂРґРёРЅР°С‚, РїРµСЂРµРґР°РЅРЅС‹С… РІ РїР°СЂР°РјРµС‚СЂС‹, РІ РІРµРєС‚РѕСЂРµ СЃС‚РµРЅ
 	/// </summary>
-	/// <param name="pos">Какие координаты ищем</param>
-	/// <returns>Найденная стена типа Wall или nullptr если не найдено</returns>
+	/// <param name="pos">РљР°РєРёРµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РёС‰РµРј</param>
+	/// <returns>РќР°Р№РґРµРЅРЅР°СЏ СЃС‚РµРЅР° С‚РёРїР° Wall РёР»Рё nullptr РµСЃР»Рё РЅРµ РЅР°Р№РґРµРЅРѕ</returns>
 	Wall* findWall(Coords pos)
 	{
 		auto iterator = find_if(
@@ -84,14 +84,14 @@ public:
 	}
 
 	/// <summary>
-	/// Проверяет, одинаковы ли координаты игрока и любой стены из вектора walls
+	/// РџСЂРѕРІРµСЂСЏРµС‚, РѕРґРёРЅР°РєРѕРІС‹ Р»Рё РєРѕРѕСЂРґРёРЅР°С‚С‹ РёРіСЂРѕРєР° Рё Р»СЋР±РѕР№ СЃС‚РµРЅС‹ РёР· РІРµРєС‚РѕСЂР° walls
 	/// </summary>
-	/// <returns>Найденная стена типа Wall, координаты которой совпадают с игроком, или nullptr если не найдено</returns>
+	/// <returns>РќР°Р№РґРµРЅРЅР°СЏ СЃС‚РµРЅР° С‚РёРїР° Wall, РєРѕРѕСЂРґРёРЅР°С‚С‹ РєРѕС‚РѕСЂРѕР№ СЃРѕРІРїР°РґР°СЋС‚ СЃ РёРіСЂРѕРєРѕРј, РёР»Рё nullptr РµСЃР»Рё РЅРµ РЅР°Р№РґРµРЅРѕ</returns>
 	Wall* findWall()
 	{
 		return findWall({
 				.x = this->player.x,
-				.y = this->player.y // через явное определение свойств избегаем копирования
+				.y = this->player.y // С‡РµСЂРµР· СЏРІРЅРѕРµ РѕРїСЂРµРґРµР»РµРЅРёРµ СЃРІРѕР№СЃС‚РІ РёР·Р±РµРіР°РµРј РєРѕРїРёСЂРѕРІР°РЅРёСЏ
 			}
 		);
 	}
@@ -149,25 +149,25 @@ public:
 
 		switch (key)
 		{
-		case static_cast<unsigned int>('ж'):
+		case static_cast<unsigned int>('Р¶'):
 		case 'w':
 			if (this->findWall({.x = player->x, .y = player->y - 1})) break;
 			this->goY(false, this->height);
 			++this->step_counter;
 			break;
-		case static_cast<unsigned int>('д'):
+		case static_cast<unsigned int>('Рґ'):
 		case 'a':
 			if (this->findWall({.x = this->player.x - 1, .y = this->player.y})) break;
 			goX(false, this->width);
 			++this->step_counter;
 			break;
-		case static_cast<unsigned int>('л'):
+		case static_cast<unsigned int>('Р»'):
 		case 's':
 			if (this->findWall({.x = this->player.x, .y = this->player.y + 1})) break;
 			goY(true, height);
 			++this->step_counter;
 			break;
-		case static_cast<unsigned int>('ў'):
+		case static_cast<unsigned int>('Сћ'):
 		case 'd':
 			if (this->findWall({.x = this->player.x + 1, .y = this->player.y})) break;
 			goX(true, width);
@@ -175,7 +175,7 @@ public:
 			break;
 		case '\r':
 		case '\n':
-			// g_step_counter = 0; // Когда ставим бомбу обнулям счетчик шагов
+			// g_step_counter = 0; // РљРѕРіРґР° СЃС‚Р°РІРёРј Р±РѕРјР±Сѓ РѕР±РЅСѓР»СЏРј СЃС‡РµС‚С‡РёРє С€Р°РіРѕРІ
 			break;
 		default: break;
 		}
@@ -183,10 +183,10 @@ public:
 
 	void gen_walls(int count)
 	{
-		// я точно не понимаю, как это происходит, но четыре строки кода ниже генерируют случайные значения в нужном диапазоне
+		// СЏ С‚РѕС‡РЅРѕ РЅРµ РїРѕРЅРёРјР°СЋ, РєР°Рє СЌС‚Рѕ РїСЂРѕРёСЃС…РѕРґРёС‚, РЅРѕ С‡РµС‚С‹СЂРµ СЃС‚СЂРѕРєРё РєРѕРґР° РЅРёР¶Рµ РіРµРЅРµСЂРёСЂСѓСЋС‚ СЃР»СѓС‡Р°Р№РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РІ РЅСѓР¶РЅРѕРј РґРёР°РїР°Р·РѕРЅРµ
 		// https://ru.cppreference.com/w/cpp/numeric/random/uniform_int_distribution
-		random_device rd; // генератор типа rand()
-		mt19937 gen(rd()); // указываем как именно будут подбираться рандомные значения
+		random_device rd; // РіРµРЅРµСЂР°С‚РѕСЂ С‚РёРїР° rand()
+		mt19937 gen(rd()); // СѓРєР°Р·С‹РІР°РµРј РєР°Рє РёРјРµРЅРЅРѕ Р±СѓРґСѓС‚ РїРѕРґР±РёСЂР°С‚СЊСЃСЏ СЂР°РЅРґРѕРјРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ
 		uniform_int_distribution<int> dist_x(1, this->width - 1);
 		uniform_int_distribution<int> dist_y(1, this->height - 1);
 
@@ -203,20 +203,20 @@ public:
 			);
 		}
 
-		// Перемешиваем
+		// РџРµСЂРµРјРµС€РёРІР°РµРј
 		ranges::shuffle(this->walls, gen);
 	}
 #pragma endregion
 
 	/// <summary>
-	/// Рысуе поле
+	/// Р С‹СЃСѓРµ РїРѕР»Рµ
 	/// </summary>
 	void draw_field()
 	{
 		for (int i = 1; i <= this->width + 1; ++i)
 		{
 			cpwo(" # ", 6, 2);
-		} // Первая линия решетками
+		} // РџРµСЂРІР°СЏ Р»РёРЅРёСЏ СЂРµС€РµС‚РєР°РјРё
 
 		cpwo('\n');
 
@@ -226,9 +226,9 @@ public:
 			for (int j = 1; j < this->width; j++)
 			{
 				auto wall = findWall({.x = j, .y = i});
-				// ищем текущие координаты (i, j) в векторе walls и получаем, если найдено совпадение
+				// РёС‰РµРј С‚РµРєСѓС‰РёРµ РєРѕРѕСЂРґРёРЅР°С‚С‹ (i, j) РІ РІРµРєС‚РѕСЂРµ walls Рё РїРѕР»СѓС‡Р°РµРј, РµСЃР»Рё РЅР°Р№РґРµРЅРѕ СЃРѕРІРїР°РґРµРЅРёРµ
 				if (this->player.x == j && this->player.y == i)
-				{
+				{ 
 					cpwo(" + ");
 				}
 				else if (wall && wall->isBreakable)
