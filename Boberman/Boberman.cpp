@@ -95,6 +95,7 @@ int main()
             else if (curr == 4)
             {
                 cpwo("Dowidzenia <3\n");
+                _getch();
                 return 0;
             }
         }
@@ -114,6 +115,7 @@ int main()
             if (key == 'l' || key == '¤')
             {
                 cpwo("Dowidzenia <3\n");
+                _getch();
                 break;
             }
 
